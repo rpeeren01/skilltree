@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background-color: #0f0f0f;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  :root {
+    --gold: #FFD700;
+    --gold-dim: #FFC107;
+    --cyan: #00D9FF;
+    --lime: #00FF88;
+    --bg-dark: #0f0f0f;
+    --bg-card: #1a1a1a;
+    --bg-card2: #222222;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #888888;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #1a1a1a; }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
+
+/* XP bar animation */
+.xp-bar-fill {
+  transition: width 0.5s ease-out;
+}
+
+/* Glow animations */
+@keyframes glow-gold {
+  0%, 100% { box-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700; }
+  50% { box-shadow: 0 0 20px #FFD700, 0 0 40px #FFD700; }
+}
+
+@keyframes glow-cyan {
+  0%, 100% { box-shadow: 0 0 5px #00D9FF; }
+  50% { box-shadow: 0 0 20px #00D9FF, 0 0 40px #00D9FF; }
+}
+
+@keyframes pulse-red {
+  0%, 100% { border-color: #ff4444; }
+  50% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; }
+}
+
+@keyframes float-up {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-60px); }
+}
+
+@keyframes level-up-flash {
+  0% { background: transparent; }
+  20% { background: rgba(255, 215, 0, 0.2); }
+  100% { background: transparent; }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes streak-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-glow-gold { animation: glow-gold 1.5s ease-in-out infinite; }
+.animate-glow-cyan { animation: glow-cyan 1.5s ease-in-out infinite; }
+.animate-pulse-red { animation: pulse-red 0.8s ease-in-out infinite; }
+.animate-float-up { animation: float-up 1.2s ease-out forwards; }
+.animate-level-flash { animation: level-up-flash 0.8s ease-out forwards; }
+.animate-bounce-in { animation: bounce-in 0.4s ease-out forwards; }
+.animate-shake { animation: shake 0.4s ease-in-out; }
+.animate-streak-pulse { animation: streak-pulse 1s ease-in-out infinite; }
+
+/* Card hover effect */
+.skill-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.skill-card:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.25);
+  border-color: #FFD700 !important;
+}
+.skill-card:active {
+  transform: scale(0.97);
+}
+
+/* Button glow */
+.btn-gold {
+  transition: all 0.15s ease;
+  background: transparent;
+  border: 2px solid #FFD700;
+  color: #FFD700;
+}
+.btn-gold:hover {
+  background: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+.btn-gold:active {
+  transform: scale(0.96);
+}
+
+.btn-gold-filled {
+  transition: all 0.15s ease;
+  background: #FFD700;
+  color: #000;
+}
+.btn-gold-filled:hover {
+  background: #FFC107;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+.btn-gold-filled:active {
+  transform: scale(0.96);
+}
+
+/* Toast animation */
+@keyframes slide-in-up {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slide-out-down {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100px); opacity: 0; }
+}
+
+.toast-in { animation: slide-in-up 0.3s ease-out forwards; }
+.toast-out { animation: slide-out-down 0.3s ease-in forwards; }
+
+/* Page fade */
+.page-enter { animation: fade-in 0.2s ease-out; }
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Gradient progress bar */
+.progress-gradient {
+  background: linear-gradient(90deg, #00D9FF, #FFD700);
+}
+
+/* Input gold focus */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #FFD700 !important;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+/* Hide number input arrows */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Bottom nav safe area */
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Confetti canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
