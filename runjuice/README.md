@@ -3,32 +3,42 @@
 Eén-pagina website voor het businessplan van **RunJuice**, een mobiele sap- en
 herstelbar voor hardlopers (werktitel, versie 0.1 · augustus 2026).
 
-## Het idee achter het ontwerp
+## Het ontwerp
 
-De pagina is opgezet als een **hardloopronde**, niet als een brochure:
+Redactioneel opgezet, als een katern: warm papier, een kantlijn met
+hoofdstuknummers die meeloopt tijdens het lezen, en haarlijnen in plaats van
+kaders en schaduwen. De beweging is terughoudend — koppen komen regel voor
+regel omhoog, balken en lijnen tekenen zichzelf, verder niets.
 
-- **De route** — een GPS-achtig pad wordt links naast de tekst getekend terwijl je
-  scrollt. Elk hoofdstuk uit het plan is een kilometerpaal die oplicht zodra je hem passeert.
-- **Het sporthorloge** — een HUD rechtsboven houdt afstand (0 – 10 km) en tijd bij.
-  De klok loopt van 08:00 naar 12:00: precies de uren van de vaste weekendstandplaats.
-  Klik op de onderste regel voor de rondelijst met alle hoofdstukken.
-- **De zonsopgang** — het licht op de achtergrond komt op naarmate je vordert; het
-  slothoofdstuk staat in vol daglicht.
-- **De cadans** — pulserende elementen lopen op 180 ms × 2, de standaard-cadans van
-  180 stappen per minuut.
-- **De glazen** op de menukaart vullen zich tot het niveau van de geschatte brutomarge.
-- **De aanhanger** tekent zichzelf als technische zijaanzicht; de zes punten tonen de
-  uitrusting aan boord.
-- **Het rekenmodel** bij hoofdstuk 7 is interactief: draaidagen, producten per dag en
-  gemiddelde besteding sturen de winst-en-verliesopstelling, de waterval en de
-  terugverdientijd live aan.
+**Typografie.** Fraunces voor koppen, cijfers en accenten; Instrument Sans voor
+lopende tekst en labels. Beide zijn variabele fonts en worden lokaal geladen uit
+`assets/fonts/` — geen externe verzoeken, dus ook offline en achter een firewall
+identiek.
 
-Alles respecteert `prefers-reduced-motion`, en er is een print-stylesheet zodat het
-plan ook op papier leesbaar blijft.
+**Kleur.** Papier `#F7F2E9`, inkt `#191510`, en vier sapkleuren die alleen als
+accent worden ingezet: biet `#A81B4A`, citrus `#C96A12`, blad `#2F6B47` en
+water `#2C6B86`.
+
+### De onderdelen die iets doen
+
+- **De wijzerplaat** in de opening toont het venster 08:00 – 12:00, de vaste
+  standplaatsuren. De wijzer erlangs is tegelijk de leesvoortgang van de pagina;
+  in de kopregel staat dezelfde plaat in het klein.
+- **De kaart** zet elk product als menuregel neer, met een balk die de geschatte
+  brutomarge toont in de eigen kleur van het product.
+- **Het weekschema** is een echt rooster: uren verticaal, dagen horizontaal, met
+  de vaste blokken en de periodieke clubavonden erin.
+- **De aanhanger** is een technische plaat op ruitjespapier die zichzelf tekent.
+  De legenda en de genummerde punten lichten elkaar op.
+- **Het rekenmodel** bij hoofdstuk 7 stuurt de winst-en-verliesopstelling, de
+  waterval en de terugverdien-wijzerplaat live aan.
+
+Alles respecteert `prefers-reduced-motion`, en er is een print-stylesheet: een
+businessplan wordt nu eenmaal ook uitgeprint.
 
 ## Draaien
 
-Geen build-stap, geen dependencies — het is platte HTML, CSS en JavaScript.
+Geen build-stap, geen dependencies — platte HTML, CSS en JavaScript.
 
 ```bash
 cd runjuice
@@ -36,24 +46,23 @@ python3 -m http.server 8080
 # open http://localhost:8080
 ```
 
-Direct `index.html` openen werkt ook, al laadt `main.js` als module dan niet in
-alle browsers; een lokale server is de veiligste route.
-
 ## Bestanden
 
 ```
 runjuice/
   index.html            alle inhoud uit het businessplan
-  assets/styles.css     ontwerp, animaties, print- en mobiele varianten
-  assets/main.js        route, HUD, tellers, glazen, aanhanger, rekenmodel
+  assets/styles.css     ontwerpsysteem, componenten, print en mobiel
+  assets/main.js        wijzerplaat, weekschema, plaat, rekenmodel, inhoudsopgave
+  assets/fonts/         Fraunces en Instrument Sans (woff2, lokaal gehost)
   assets/favicon.svg
 ```
 
 ## Cijfers
 
-Alle bedragen komen rechtstreeks uit het businessplan (startinvestering
-€ 19.500 – € 22.000, omzetprognose ≈ € 36.000, brutowinst ≈ € 19.900). Het
-rekenmodel gebruikt daarnaast twee expliciete aannames: inkoopkosten blijven 35%
-van de omzet, en de standplaats-/evenementkosten schalen mee met het aantal
-draaidagen (€ 1.500 bij 100 dagen). Verzekering, onderhoud en marketing staan vast.
-De terugverdientijd rekent met het midden van de investeringsrange (€ 20.750).
+Alle bedragen komen uit het businessplan (startinvestering € 19.500 – € 22.000,
+omzetprognose ≈ € 36.000, brutowinst ≈ € 19.900, terugverdientijd 12 – 18
+maanden). Het rekenmodel voegt daar twee expliciete aannames aan toe: de
+inkoopkosten blijven 35% van de omzet, en de standplaats- en evenementkosten
+schalen mee met het aantal draaidagen (€ 1.500 bij 100 dagen). Verzekering,
+onderhoud en marketing staan vast. De terugverdientijd rekent met het midden van
+de investeringsrange, € 20.750. Die aannames staan ook op de pagina zelf vermeld.

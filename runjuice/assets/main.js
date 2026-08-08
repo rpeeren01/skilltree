@@ -1,368 +1,351 @@
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════════
    RunJuice — interactie
-   De pagina is een ronde: route tekenen, kilometers tellen,
-   zon laten opkomen, en de cijfers laten meebewegen.
-   ============================================================ */
+   Alles is opt-in per onderdeel: valt er iets uit, dan blijft de
+   rest van de pagina gewoon leesbaar.
+   ═══════════════════════════════════════════════════════════════ */
+(() => {
+  'use strict';
 
-const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const euro = (n) => '€ ' + Math.round(n).toLocaleString('nl-NL');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const nl = (n) => Math.round(n).toLocaleString('nl-NL');
+  const euro = (n) => '€ ' + nl(n);
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const svgEl = (tag, attrs) => {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  };
 
-/* ── 1. onthullen bij binnenkomst ──────────────────────────── */
-const revealIO = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    if (!e.isIntersecting) continue;
-    e.target.classList.add('is-in');
-    revealIO.unobserve(e.target);
-  }
-}, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
-
-document.querySelectorAll('[data-reveal]').forEach((el) => {
-  el.style.setProperty('--d', el.dataset.delay || 0);
-  revealIO.observe(el);
-});
-
-/* koppen woord voor woord omhoog laten komen */
-document.querySelectorAll('[data-splitwords]').forEach((el) => {
-  const words = el.textContent.trim().split(/\s+/);
-  el.textContent = '';
-  words.forEach((w, i) => {
-    const outer = document.createElement('span');
-    outer.className = 'word';
-    outer.style.setProperty('--w', i);
-    const inner = document.createElement('span');
-    inner.textContent = w;
-    outer.append(inner);
-    el.append(outer, document.createTextNode(' '));
-  });
-  revealIO.observe(el);
-});
-
-/* ── 2. tellers ────────────────────────────────────────────── */
-const countIO = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    if (!e.isIntersecting) continue;
-    const el = e.target;
-    countIO.unobserve(el);
-    const target = Number(el.dataset.count);
-    const fmt = (v) => el.dataset.format === 'thousand'
-      ? Math.round(v).toLocaleString('nl-NL')
-      : String(Math.round(v));
-    if (reduced) { el.textContent = fmt(target); continue; }
-    const dur = 1400, t0 = performance.now();
-    const tick = (now) => {
-      const p = clamp((now - t0) / dur);
-      el.textContent = fmt(target * (1 - Math.pow(1 - p, 3)));
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }
-}, { threshold: 0.6 });
-document.querySelectorAll('[data-count]').forEach((el) => countIO.observe(el));
-
-/* ── 3. glazen die zich vullen tot de brutomarge ───────────── */
-const GLASS = 'M20 8 H70 L63 116 a8 8 0 0 1 -8 7 H35 a8 8 0 0 1 -8 -7 Z';
-document.querySelectorAll('[data-glass]').forEach((host, i) => {
-  const card = host.closest('.drink');
-  const fill = clamp(Number(card.dataset.fill) / 100, 0, 1);
-  const topY = 118 - fill * 104;            // vulniveau binnen het glas
-  const id = `glass-clip-${i}`;
-  host.innerHTML = `
-    <svg viewBox="0 0 90 132" role="img" aria-label="Vulniveau toont de geschatte brutomarge">
-      <defs><clipPath id="${id}"><path d="${GLASS}"/></clipPath></defs>
-      <g clip-path="url(#${id})">
-        <g class="glass__fill">
-          <g transform="translate(0 ${topY})">
-            <rect class="glass__liquid" x="-10" y="4" width="110" height="140"/>
-            <path class="glass__wave" d="M-90 6 q22.5 -9 45 0 t45 0 t45 0 t45 0 t45 0 t45 0 V60 H-90 Z"/>
-          </g>
-        </g>
-      </g>
-      <path class="glass__outline" d="${GLASS}"/>
-    </svg>`;
-});
-
-/* ── 4. de aanhanger: zelftekenend + hotspots ──────────────── */
-const rig = document.querySelector('.rig');
-if (rig) {
-  rig.querySelectorAll('.rig__draw path, .rig__draw circle').forEach((el, i) => {
-    if (el.classList.contains('rig__ground') || el.classList.contains('rig__dash')) return;
-    const len = Math.ceil(el.getTotalLength());
-    el.style.setProperty('--len', len);
-    el.style.setProperty('--i', i);
-  });
-  new IntersectionObserver((entries, obs) => {
+  /* ── 1 · onthullen ─────────────────────────────────────────── */
+  const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (!e.isIntersecting) continue;
-      e.target.classList.add('is-in');
-      obs.unobserve(e.target);
+      e.target.classList.add('in');
+      io.unobserve(e.target);
     }
-  }, { threshold: 0.25 }).observe(rig);
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
 
-  const nameEl = document.getElementById('rigName');
-  const noteEl = document.getElementById('rigNote');
-  const readout = document.getElementById('rigReadout');
-  const spots = [...rig.querySelectorAll('.spot')];
-
-  const show = (spot) => {
-    spots.forEach((s) => s.classList.toggle('is-active', s === spot));
-    readout.dataset.empty = 'false';
-    nameEl.innerHTML = spot.dataset.spot;
-    noteEl.textContent = spot.dataset.note;
+  const watch = (el, delay) => {
+    if (delay !== undefined) el.style.setProperty('--d', delay);
+    io.observe(el);
   };
 
-  spots.forEach((spot, i) => {
-    spot.setAttribute('tabindex', '0');
-    spot.setAttribute('role', 'button');
-    spot.setAttribute('aria-label', `Uitrusting ${i + 1}: ${spot.dataset.spot.replace('&amp;', 'en')}`);
-    spot.addEventListener('pointerenter', () => show(spot));
-    spot.addEventListener('focus', () => show(spot));
-    spot.addEventListener('click', () => show(spot));
-    spot.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); show(spot); }
+  $$('[data-reveal]').forEach((el) => watch(el, el.dataset.delay || 0));
+
+  // koppen: regel voor regel (vooraf gezet) of woord voor woord
+  $$('[data-line]').forEach((el, i) => {
+    el.innerHTML = `<i>${el.innerHTML}</i>`;
+    el.style.setProperty('--d', i);
+    watch(el);
+  });
+
+  $$('[data-splitwords]').forEach((el) => {
+    const words = el.textContent.trim().split(/\s+/);
+    el.textContent = '';
+    words.forEach((w, i) => {
+      const outer = document.createElement('span');
+      outer.className = 'word';
+      outer.style.setProperty('--w', i);
+      outer.innerHTML = `<i>${w}</i>`;
+      el.append(outer, document.createTextNode(' '));
     });
+    watch(el);
   });
-}
 
-/* ── 5. investeringsbalken ─────────────────────────────────── */
-const budget = document.querySelector('[data-budget]');
-if (budget) {
-  const items = [...budget.children];
-  const max = Math.max(...items.map((li) => Number(li.dataset.hi)));
-  items.forEach((li) => {
-    li.style.setProperty('--lo', (Number(li.dataset.lo) / max * 100) + '%');
-    li.style.setProperty('--hi', (Number(li.dataset.hi) / max * 100) + '%');
-  });
-}
-
-/* ── 6. rekenmodel + waterval ──────────────────────────────── */
-const FIXED = { insurance: 1200, marketing: 800 };
-const PITCH_BASE = 1500;        // standplaats-/evenementkosten bij 100 draaidagen
-const INVEST = 20750;           // midden van € 19.500 – € 22.000
-const COGS_RATE = 0.35;
-const DEFAULTS = { days: 100, units: 80, spend: 4.5 };
-
-const inDays = document.getElementById('inDays');
-const inUnits = document.getElementById('inUnits');
-const inSpend = document.getElementById('inSpend');
-
-if (inDays && inUnits && inSpend) {
-  const outDays = document.getElementById('outDays');
-  const outUnits = document.getElementById('outUnits');
-  const outSpend = document.getElementById('outSpend');
-  const wf = document.getElementById('waterfall');
-
-  const paintTrack = (input) => {
-    const pct = (input.value - input.min) / (input.max - input.min) * 100;
-    input.style.setProperty('--pct', pct + '%');
-  };
-
-  const buildWaterfall = (steps) => {
-    wf.innerHTML = steps.map((s) => `
-      <div class="wf wf--${s.type}">
-        <div class="wf__col"><div class="wf__block" style="bottom:${s.bottom}%;height:${s.height}%"></div></div>
-        <span class="wf__lab">${s.label}</span>
-      </div>`).join('');
-  };
-
-  const render = () => {
-    const days = Number(inDays.value);
-    const units = Number(inUnits.value);
-    const spend = Number(inSpend.value);
-
-    const revenue = days * units * spend;
-    const cogs = revenue * COGS_RATE;
-    const pitch = PITCH_BASE * (days / DEFAULTS.days);
-    const profit = revenue - cogs - pitch - FIXED.insurance - FIXED.marketing;
-
-    outDays.textContent = days;
-    outUnits.textContent = units;
-    outSpend.textContent = '€ ' + spend.toFixed(2).replace('.', ',');
-    [inDays, inUnits, inSpend].forEach(paintTrack);
-
-    document.getElementById('plRevenue').textContent = euro(revenue);
-    document.getElementById('plCogs').textContent = '− ' + euro(cogs);
-    document.getElementById('plPitch').textContent = '− ' + euro(pitch);
-    document.getElementById('plProfit').textContent = euro(profit);
-
-    const months = profit > 0 ? Math.round(INVEST / (profit / 12)) : null;
-    document.getElementById('plPayback').textContent = months === null
-      ? 'niet terugverdiend'
-      : `${months} ${months === 1 ? 'maand' : 'maanden'}`;
-
-    // waterval: omzet, kosten die eraf gaan, en wat overblijft
-    const scale = Math.max(revenue, 1);
-    const h = (v) => clamp(v / scale) * 100;
-    let running = revenue;
-    const steps = [{ type: 'in', label: 'Omzet', bottom: 0, height: h(revenue) }];
-    for (const [label, value] of [
-      ['Inkoop', cogs], ['Standplaats', pitch],
-      ['Verzek.', FIXED.insurance], ['Marketing', FIXED.marketing],
-    ]) {
-      running -= value;
-      steps.push({ type: 'out', label, bottom: h(Math.max(running, 0)), height: h(value) });
+  /* ── 2 · tellers ───────────────────────────────────────────── */
+  const counters = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      counters.unobserve(e.target);
+      const el = e.target;
+      const to = Number(el.dataset.count);
+      const fmt = (v) => (el.dataset.fmt === 'k' ? nl(v) : String(Math.round(v)));
+      if (reduced) { el.textContent = fmt(to); continue; }
+      const t0 = performance.now(), dur = 1200;
+      const step = (now) => {
+        const p = clamp((now - t0) / dur);
+        el.textContent = fmt(to * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     }
-    steps.push({ type: 'sum', label: 'Brutowinst', bottom: 0, height: h(Math.max(profit, 0)) });
-    buildWaterfall(steps);
-  };
+  }, { threshold: 0.8 });
+  $$('[data-count]').forEach((el) => counters.observe(el));
 
-  [inDays, inUnits, inSpend].forEach((el) => el.addEventListener('input', render));
-  document.getElementById('resetModel').addEventListener('click', () => {
-    inDays.value = DEFAULTS.days;
-    inUnits.value = DEFAULTS.units;
-    inSpend.value = DEFAULTS.spend;
+  /* ── 3 · wijzerplaat in de opening ─────────────────────────── */
+  const dialTicks = $('#dialTicks');
+  if (dialTicks) {
+    for (let i = 0; i < 60; i++) {
+      const major = i % 5 === 0;
+      const a = (i / 60) * Math.PI * 2 - Math.PI / 2;
+      const r1 = major ? 158 : 168, r2 = 176;
+      dialTicks.append(svgEl('line', {
+        class: 'dial__tick' + (major ? ' dial__tick--major' : ''),
+        x1: Math.cos(a) * r1, y1: Math.sin(a) * r1,
+        x2: Math.cos(a) * r2, y2: Math.sin(a) * r2,
+      }));
+    }
+    [12, 3, 6, 9].forEach((h) => {
+      const a = (h / 12) * Math.PI * 2 - Math.PI / 2;
+      dialTicks.append(Object.assign(
+        svgEl('text', { class: 'dial__num', x: Math.cos(a) * 112, y: Math.sin(a) * 112 + 5 }),
+        { textContent: h }
+      ));
+    });
+    // het venster 08:00 – 12:00, een kwart van de wijzerplaat
+    const pt = (h, r) => {
+      const a = (h / 12) * Math.PI * 2 - Math.PI / 2;
+      return [Math.cos(a) * r, Math.sin(a) * r];
+    };
+    const [x1, y1] = pt(8, 150), [x2, y2] = pt(12, 150);
+    $('#dialWindow').setAttribute('d', `M${x1} ${y1} A150 150 0 0 1 ${x2} ${y2}`);
+  }
+
+  /* ── 4 · merktekens op de kaart ────────────────────────────── */
+  const MARKS = {
+    // biet: knol met loof
+    biet: `<path d="M26 15c2-5.5 6.5-8.5 12-8.5-.5 5-4 8.5-8.5 10" fill="none" stroke="var(--tone)" stroke-width="1.8" stroke-linejoin="round"/>
+           <path d="M26 15c-2-4.5-6-7-11-6.5 1 4.5 4 7.5 8 8.7" fill="none" stroke="var(--tone)" stroke-width="1.8" stroke-linejoin="round"/>
+           <path d="M26 17c9.5 0 15.5 6.5 15.5 14.5 0 8.5-8.5 16.5-15.5 20.5-7-4-15.5-12-15.5-20.5C10.5 23.5 16.5 17 26 17Z" fill="var(--tone)"/>`,
+    // kokosnoot in doorsnede
+    kokos: `<circle cx="26" cy="28" r="20" fill="var(--tone)"/>
+            <circle cx="26" cy="28" r="13" fill="var(--paper)"/>
+            <circle cx="26" cy="28" r="13" fill="none" stroke="var(--tone)" stroke-width="1.4"/>
+            <path d="M18.5 22a9 9 0 0 1 6-3.5" fill="none" stroke="var(--tone)" stroke-width="1.6" stroke-linecap="round"/>`,
+    // shotglas met citroenschijf
+    shot: `<path d="M14 15h22l-3 30a4 4 0 0 1-4 3.6h-8A4 4 0 0 1 17 45Z" fill="none" stroke="var(--tone)" stroke-width="1.8" stroke-linejoin="round"/>
+           <path d="M15.6 27h18.8l-2 18a4 4 0 0 1-4 3.6h-6.8a4 4 0 0 1-4-3.6Z" fill="var(--tone)"/>
+           <circle cx="37" cy="14" r="8" fill="var(--paper)" stroke="var(--tone)" stroke-width="1.5"/>
+           <path d="M37 6v16M29 14h16" stroke="var(--tone)" stroke-width="1.2"/>`,
+    // reep met breuklijnen
+    reep: `<rect x="6" y="16" width="40" height="22" rx="3" fill="var(--tone)"/>
+           <path d="M19.3 16v22M32.6 16v22" stroke="var(--paper)" stroke-width="1.6" stroke-opacity=".75"/>
+           <path d="M6 27h40" stroke="var(--paper)" stroke-width="1.6" stroke-opacity=".5"/>`,
+  };
+  $$('[data-mark]').forEach((el) => {
+    el.innerHTML = `<svg viewBox="0 0 52 52" aria-hidden="true">${MARKS[el.dataset.mark] || ''}</svg>`;
+  });
+
+  /* ── 5 · weekschema ────────────────────────────────────────── */
+  const weekGrid = $('#weekGrid');
+  if (weekGrid) {
+    const DAYS = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
+    const FROM = 6, TO = 22;                        // zichtbare uren
+    const y = (h) => ((h - FROM) / (TO - FROM)) * 100;
+    const blocks = {
+      di: [[19, 21, 'open', 'club']],
+      do: [[19, 21, 'open', 'club']],
+      za: [[8, 12, 'solid', '08–12']],
+      zo: [[8, 12, 'solid', '08–12']],
+    };
+
+    let head = '<div class="wk-h wk-h--corner">uur</div>';
+    DAYS.forEach((d) => { head += `<div class="wk-h">${d}</div>`; });
+
+    let axis = '<div class="wk-axis">';
+    for (let h = FROM; h <= TO; h += 2) {
+      const shift = h === FROM ? '0' : h === TO ? '-100%' : '-50%';
+      axis += `<span style="top:${y(h)}%;transform:translateY(${shift})">${String(h).padStart(2, '0')}:00</span>`;
+    }
+    axis += '</div>';
+
+    let i = 0, cols = '';
+    DAYS.forEach((d) => {
+      cols += '<div class="wk-col">';
+      (blocks[d] || []).forEach(([a, b, kind, lab]) => {
+        cols += `<div class="wk-block wk-block--${kind}" style="--i:${i++};top:${y(a)}%;height:${y(b) - y(a)}%"><b>${lab}</b></div>`;
+      });
+      cols += '</div>';
+    });
+
+    let rules = '<div class="wk-rules">';
+    for (let h = FROM + 2; h < TO; h += 2) rules += `<span style="top:${y(h)}%"></span>`;
+    rules += '</div>';
+
+    weekGrid.innerHTML = `<div class="wk-row wk-row--head">${head}</div>`
+      + `<div class="wk-row wk-row--body">${axis}${cols}${rules}</div>`;
+    watch(weekGrid.closest('.week'));
+  }
+
+  /* ── 6 · de aanhanger ──────────────────────────────────────── */
+  const rig = $('.rig');
+  if (rig) {
+    $$('.rig__draw .ln', rig).forEach((el, i) => {
+      const len = Math.ceil(el.getTotalLength());
+      el.style.setProperty('--len', len);
+      el.style.setProperty('--i', i);
+    });
+    watch(rig);
+
+    const pins = $('#rigPins');
+    const items = $$('#rigLegend li');
+    items.forEach((li, i) => {
+      const g = svgEl('g', { class: 'pin', tabindex: '0', role: 'button',
+        'aria-label': `${i + 1}. ${li.querySelector('b').textContent}` });
+      g.append(svgEl('circle', { class: 'pin__hit', cx: li.dataset.x, cy: li.dataset.y, r: 22, fill: 'transparent' }));
+      g.append(svgEl('circle', { class: 'pin__dot', cx: li.dataset.x, cy: li.dataset.y, r: 13 }));
+      const t = svgEl('text', { x: li.dataset.x, y: Number(li.dataset.y) + 4.5 });
+      t.textContent = i + 1;
+      g.append(t);
+      pins.append(g);
+
+      const on = (state) => { g.classList.toggle('on', state); li.classList.toggle('on', state); };
+      const pair = [g, li];
+      pair.forEach((node) => {
+        node.addEventListener('pointerenter', () => on(true));
+        node.addEventListener('pointerleave', () => on(false));
+        node.addEventListener('focus', () => on(true));
+        node.addEventListener('blur', () => on(false));
+      });
+    });
+  }
+
+  /* ── 7 · investeringsbalken ────────────────────────────────── */
+  const budget = $('#budget');
+  if (budget) {
+    const items = [...budget.children];
+    const max = Math.max(...items.map((li) => Number(li.dataset.hi)));
+    items.forEach((li) => {
+      li.style.setProperty('--lo', (Number(li.dataset.lo) / max) * 100 + '%');
+      li.style.setProperty('--hi', (Number(li.dataset.hi) / max) * 100 + '%');
+    });
+  }
+
+  /* ── 8 · rekenmodel ────────────────────────────────────────── */
+  const FIXED = { insurance: 1200, marketing: 800 };
+  const PITCH_AT_100 = 1500;      // standplaats- en evenementkosten bij 100 draaidagen
+  const INVEST = 20750;           // midden van € 19.500 – € 22.000
+  const COGS = 0.35;
+  const BASE = { days: 100, units: 80, spend: 4.5 };
+  const PB_MAX = 24;              // schaal van de terugverdien-wijzerplaat, in maanden
+
+  const inDays = $('#inDays'), inUnits = $('#inUnits'), inSpend = $('#inSpend');
+  if (inDays && inUnits && inSpend) {
+    const wf = $('#waterfall'), arc = $('#pbArc');
+
+    const ticks = $('#pbTicks');
+    if (ticks) {
+      for (let m = 0; m <= PB_MAX; m += 3) {
+        const a = (m / PB_MAX) * Math.PI * 2 - Math.PI / 2;
+        ticks.append(svgEl('line', {
+          class: 'pb__tick',
+          x1: Math.cos(a) * 39, y1: Math.sin(a) * 39,
+          x2: Math.cos(a) * 34, y2: Math.sin(a) * 34,
+        }));
+      }
+    }
+
+    const track = (el) => el.style.setProperty('--pct',
+      ((el.value - el.min) / (el.max - el.min)) * 100 + '%');
+
+    const render = () => {
+      const days = +inDays.value, units = +inUnits.value, spend = +inSpend.value;
+      const revenue = days * units * spend;
+      const cogs = revenue * COGS;
+      const pitch = PITCH_AT_100 * (days / BASE.days);
+      const profit = revenue - cogs - pitch - FIXED.insurance - FIXED.marketing;
+
+      $('#outDays').textContent = days;
+      $('#outUnits').textContent = units;
+      $('#outSpend').textContent = '€ ' + spend.toFixed(2).replace('.', ',');
+      [inDays, inUnits, inSpend].forEach(track);
+
+      $('#plRevenue').textContent = euro(revenue);
+      $('#plCogs').textContent = '− ' + euro(cogs);
+      $('#plPitch').textContent = '− ' + euro(pitch);
+      $('#plProfit').textContent = euro(profit);
+
+      const months = profit > 0 ? Math.round(INVEST / (profit / 12)) : null;
+      $('#plPayback').textContent = months === null
+        ? 'niet terugverdiend'
+        : `${months} ${months === 1 ? 'maand' : 'maanden'}`;
+      if (arc) {
+        const p = months === null ? 100 : clamp(months / PB_MAX) * 100;
+        arc.setAttribute('stroke-dasharray', `${p} ${100 - p}`);
+      }
+
+      // waterval: van omzet naar wat er overblijft
+      const scale = Math.max(revenue, 1);
+      const h = (v) => clamp(v / scale) * 100;
+      let run = revenue;
+      const steps = [{ t: 'in', l: 'Omzet', v: revenue, b: 0, h: h(revenue) }];
+      [['Inkoop', cogs], ['Standplaats', pitch], ['Verzekering', FIXED.insurance], ['Marketing', FIXED.marketing]]
+        .forEach(([l, v]) => {
+          run -= v;
+          steps.push({ t: 'out', l, v: -v, b: h(Math.max(run, 0)), h: h(v) });
+        });
+      steps.push({ t: 'sum', l: 'Brutowinst', v: profit, b: 0, h: h(Math.max(profit, 0)) });
+
+      wf.innerHTML = steps.map((s) => `
+        <div class="wf__c wf__c--${s.t}">
+          <span class="wf__v">${s.v < 0 ? '−' : ''}${nl(Math.abs(s.v))}</span>
+          <div class="wf__b" style="bottom:${s.b}%;height:${Math.max(s.h, 0.6)}%"></div>
+          <span class="wf__l">${s.l}</span>
+        </div>`).join('');
+    };
+
+    [inDays, inUnits, inSpend].forEach((el) => el.addEventListener('input', render));
+    $('#modelReset').addEventListener('click', () => {
+      inDays.value = BASE.days; inUnits.value = BASE.units; inSpend.value = BASE.spend;
+      render();
+    });
     render();
-  });
-  render();
-}
-
-/* ── 7. de route: pad langs de kilometerpalen ──────────────── */
-const layer = document.getElementById('routeLayer');
-const svg = document.getElementById('routeSvg');
-const line = document.getElementById('routeLine');
-const ghost = document.getElementById('routeGhost');
-const dot = document.getElementById('routeDot');
-const halo = document.getElementById('routeDotHalo');
-const markers = [...document.querySelectorAll('[data-marker]')];
-const sections = [...document.querySelectorAll('[data-split]')];
-
-let pathLength = 0;
-let docHeight = 1;
-let routeOn = window.matchMedia('(min-width: 901px)').matches;
-
-/* vloeiende curve door een reeks punten (Catmull-Rom → bezier) */
-function smoothPath(pts) {
-  if (pts.length < 2) return '';
-  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i - 1] || pts[i];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[i + 2] || p2;
-    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
-    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
-    d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)}, ${c2[0].toFixed(1)} ${c2[1].toFixed(1)}, ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
-  }
-  return d;
-}
-
-function buildRoute() {
-  docHeight = document.documentElement.scrollHeight;
-  routeOn = window.matchMedia('(min-width: 901px)').matches;
-  if (!layer || !routeOn) return;
-
-  layer.style.height = docHeight + 'px';
-  const w = document.documentElement.clientWidth;
-  svg.setAttribute('width', w);
-  svg.setAttribute('height', docHeight);
-  svg.setAttribute('viewBox', `0 0 ${w} ${docHeight}`);
-
-  const shell = document.querySelector('.sec, .hero');
-  const baseX = shell.getBoundingClientRect().left + window.scrollY * 0 + 66;
-  const amp = 30;
-
-  const pts = [[baseX, 0]];
-  markers.forEach((m, i) => {
-    const r = m.getBoundingClientRect();
-    const y = r.top + window.scrollY + r.height / 2;
-    pts.push([baseX + (i % 2 ? amp : -amp), y]);
-  });
-  pts.push([baseX, docHeight]);
-
-  const d = smoothPath(pts);
-  line.setAttribute('d', d);
-  ghost.setAttribute('d', d);
-  pathLength = line.getTotalLength();
-  line.style.strokeDasharray = pathLength;
-}
-
-/* ── 8. scroll: tekenen, tellen, licht ─────────────────────── */
-const hud = document.getElementById('hud');
-const hudKm = document.getElementById('hudKm');
-const hudTime = document.getElementById('hudTime');
-const hudSplit = document.getElementById('hudSplit');
-const rail = document.getElementById('progressFill');
-const TOTAL_KM = 10;
-
-let currentSplit = '';
-
-/* de rondelijst: elk hoofdstuk als split, zoals de laps op een horloge */
-const splits = document.getElementById('splits');
-const toggle = document.getElementById('splitsToggle');
-if (splits && toggle) {
-  splits.innerHTML = `<div class="splits__inner">${sections.map((s) => {
-    const km = s.dataset.km;
-    return `<a href="#${s.id}" data-for="${s.id}"><b>${km === '0' ? 'start' : km === '10' ? 'finish' : 'km ' + km}</b>${s.dataset.split}</a>`;
-  }).join('')}</div>`;
-  toggle.addEventListener('click', () => {
-    const open = hud.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', String(open));
-  });
-  splits.addEventListener('click', () => {
-    hud.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
-  });
-}
-
-function onScroll() {
-  const vh = window.innerHeight;
-  const y = window.scrollY;
-  const eye = y + vh * 0.55;                        // "waar de loper is"
-  const progress = clamp((eye - vh * 0.55) / Math.max(docHeight - vh, 1));
-
-  document.documentElement.style.setProperty('--dawn', progress.toFixed(3));
-  if (rail) rail.style.width = (progress * 100).toFixed(2) + '%';
-
-  if (routeOn && pathLength) {
-    line.style.strokeDashoffset = pathLength * (1 - progress);
-    const p = line.getPointAtLength(pathLength * progress);
-    dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y);
-    halo.setAttribute('cx', p.x); halo.setAttribute('cy', p.y);
-    dot.setAttribute('r', 5); halo.setAttribute('r', 6);
   }
 
-  markers.forEach((m) => {
-    const r = m.getBoundingClientRect();
-    m.classList.toggle('is-passed', r.top + window.scrollY <= eye);
-  });
+  /* ── 9 · inhoudsopgave, kopregel en voortgang ──────────────── */
+  const chapters = $$('[data-chapter]');
+  const topbar = $('#topbar');
+  const toc = $('#toc');
+  const tocToggle = $('#tocToggle');
+  const tocLabel = $('#tocLabel');
+  const miniArc = $('#miniArc');
+  const hand = $('#dialHand');
 
-  // sporthorloge
-  const km = (progress * TOTAL_KM).toFixed(1);
-  if (hudKm.textContent !== km) hudKm.textContent = km;
-  const mins = Math.round(progress * 240);          // 08:00 → 12:00
-  const hh = String(8 + Math.floor(mins / 60)).padStart(2, '0');
-  const mm = String(mins % 60).padStart(2, '0');
-  hudTime.textContent = `${hh}:${mm}`;
+  if (toc && tocToggle) {
+    $('#tocList').innerHTML = chapters.map((c, i) => `
+      <li><a href="#${c.id}" data-for="${c.id}">
+        <span>${i === 0 ? '—' : String(i).padStart(2, '0')}</span>
+        <span>${c.dataset.chapter}</span>
+      </a></li>`).join('');
 
-  let split = sections[0]?.dataset.split || '';
-  for (const s of sections) {
-    if (s.getBoundingClientRect().top <= vh * 0.4) split = s.dataset.split;
-  }
-  if (split !== currentSplit) {
-    currentSplit = split;
-    hudSplit.textContent = split.replace('&amp;', '&');
-    splits?.querySelectorAll('a').forEach((a) => {
-      a.classList.toggle('is-here', document.getElementById(a.dataset.for)?.dataset.split === split);
+    const close = () => { toc.classList.remove('open'); tocToggle.setAttribute('aria-expanded', 'false'); };
+    tocToggle.addEventListener('click', () => {
+      const open = toc.classList.toggle('open');
+      tocToggle.setAttribute('aria-expanded', String(open));
     });
+    toc.addEventListener('click', (e) => { if (e.target.closest('a')) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   }
 
-  hud.classList.toggle('is-on', y > vh * 0.5);
-}
+  let current = '';
+  const onScroll = () => {
+    const vh = innerHeight;
+    const max = Math.max(document.documentElement.scrollHeight - vh, 1);
+    const p = clamp(scrollY / max);
 
-let ticking = false;
-const requestTick = () => {
-  if (ticking) return;
-  ticking = true;
-  requestAnimationFrame(() => { onScroll(); ticking = false; });
-};
+    if (miniArc) miniArc.setAttribute('stroke-dasharray', `${p * 100} ${100 - p * 100}`);
+    if (hand) hand.setAttribute('transform', `rotate(${p * 360})`);
+    topbar.classList.toggle('on', scrollY > vh * 0.65);
+    const dark = document.querySelector('.finish')?.getBoundingClientRect();
+    topbar.classList.toggle('inv', !!dark && dark.top <= 58 && dark.bottom > 58);
 
-window.addEventListener('scroll', requestTick, { passive: true });
-window.addEventListener('resize', () => { buildRoute(); requestTick(); });
-window.addEventListener('load', () => { buildRoute(); requestTick(); });
+    let active = chapters[0];
+    for (const c of chapters) if (c.getBoundingClientRect().top <= vh * 0.35) active = c;
+    if (active && active.id !== current) {
+      current = active.id;
+      if (tocLabel) tocLabel.textContent = active === chapters[0] ? 'Inhoud' : active.dataset.chapter;
+      $$('#tocList a').forEach((a) => a.classList.toggle('here', a.dataset.for === current));
+    }
+  };
 
-/* de layout verschuift nog terwijl fonts en onthullingen binnenkomen */
-if (document.fonts?.ready) document.fonts.ready.then(() => { buildRoute(); requestTick(); });
-new ResizeObserver(() => { buildRoute(); requestTick(); }).observe(document.body);
-
-buildRoute();
-onScroll();
+  let ticking = false;
+  addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { onScroll(); ticking = false; });
+  }, { passive: true });
+  addEventListener('resize', onScroll);
+  onScroll();
+})();
