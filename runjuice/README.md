@@ -38,13 +38,43 @@ businessplan wordt nu eenmaal ook uitgeprint.
 
 ## Draaien
 
-Geen build-stap, geen dependencies — platte HTML, CSS en JavaScript.
+Geen build-stap, geen dependencies — platte HTML, CSS en JavaScript. Dubbelklikken
+op `index.html` werkt ook; alle bestanden worden relatief geladen.
 
 ```bash
 cd runjuice
 python3 -m http.server 8080
 # open http://localhost:8080
 ```
+
+## Publiceren op Vercel
+
+Deze map is een op zichzelf staand, statisch project. Er staat bewust géén
+`package.json` in, zodat Vercel niets probeert te bouwen en de bestanden
+rechtstreeks serveert. `vercel.json` regelt alleen de cache- en beveiligingsheaders.
+
+**Via de repository (aanbevolen, want elke push wordt gepubliceerd)**
+
+1. Vercel → *Add New… → Project* → importeer `rpeeren01/skilltree`.
+2. Zet **Root Directory** op `runjuice`. Dit is de enige instelling die telt —
+   zonder deze stap bouwt Vercel de SkillTree-app uit de repo-root.
+3. Framework Preset op *Other*; build- en outputvelden leeg laten. → *Deploy*.
+
+**Via de CLI**
+
+```bash
+cd runjuice
+vercel            # eerste keer: nieuw project aanmaken
+vercel --prod     # publiceren
+```
+
+**Via slepen en neerzetten**
+
+Zip de inhoud van deze map (dus `index.html` in de wortel van het zipbestand,
+niet een map `runjuice/` eromheen) en sleep het naar
+[vercel.com/new](https://vercel.com/new).
+
+Een eigen domein koppel je daarna onder *Project → Settings → Domains*.
 
 ## Bestanden
 
