@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>RunJuice — mobiele sap- &amp; herstelbar voor hardlopers</title>
+<meta name="description" content="RunJuice is een mobiele sap- en herstelbar op een compacte aanhanger, die staat waar hardlopers zijn: routes, clubtrainingen en loopevenementen. Businessplan 0.1, augustus 2026." />
+<meta name="theme-color" content="#F6F1E8" />
+<meta property="og:title" content="RunJuice — vers geperst, op de route" />
+<meta property="og:description" content="Mobiele sap- en herstelbar voor hardlopers. Startinvestering € 19.500 – € 22.000, terugverdientijd 12 – 18 maanden." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/fraunces-normal-latin.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/instrument-normal-latin.woff2" crossorigin />
+<link rel="stylesheet" href="plan.css" />
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ── kopregel ─────────────────────────────────────────────────── -->
+<div class="topbar" id="topbar">
+  <div class="topbar__in">
+    <a class="brand" href="#top">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.25"/>
+        <path d="M16 6.5c3.9 4.6 6.1 7.6 6.1 10.5a6.1 6.1 0 0 1-12.2 0c0-2.9 2.2-5.9 6.1-10.5Z" fill="currentColor"/>
+      </svg>
+      <span>RunJuice</span>
+    </a>
+    <button class="toc-btn" id="tocToggle" type="button" aria-expanded="false" aria-controls="toc" aria-label="Inhoud">
+      <span id="tocLabel">Inhoud</span>
+      <svg class="dial-mini" viewBox="-16 -16 32 32" aria-hidden="true">
+        <circle r="13.5" fill="none" stroke="currentColor" stroke-opacity=".3" stroke-width="1.5"/>
+        <circle id="miniArc" r="13.5" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" transform="rotate(-90)" pathLength="100" stroke-dasharray="0 100"/>
+        <circle r="1.9" fill="currentColor"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<nav class="toc" id="toc" aria-label="Inhoud"><div class="toc__in"><ol id="tocList"></ol></div></nav>
+
+<main id="top">
+
+<!-- ══ OPENING ════════════════════════════════════════════════════ -->
+<header class="hero" id="c0" data-chapter="Opening">
+  <div class="hero__in">
+    <div class="hero__text">
+      <p class="label" data-reveal>Businessplan 0.1 · augustus 2026 · werktitel</p>
+      <h1 class="hero__title">
+        <span class="line" data-line>Vers geperst,</span>
+        <span class="line" data-line><em>op de route.</em></span>
+      </h1>
+      <p class="hero__lede" data-reveal data-delay="1">
+        RunJuice is een mobiele sap- en herstelbar op een compacte aanhanger.
+        Geen zaak waar hardlopers naartoe moeten komen, maar een bar die staat
+        waar ze toch al stilvallen: het park op zaterdagochtend, de clubtraining
+        op dinsdagavond, het finishgebied van de tien kilometer.
+      </p>
+      <dl class="figures" data-reveal data-delay="2">
+        <div class="fig">
+          <dt>Startinvestering</dt>
+          <dd>€&nbsp;<span data-count="19500" data-fmt="k">19.500</span> – <span data-count="22000" data-fmt="k">22.000</span></dd>
+        </div>
+        <div class="fig">
+          <dt>Terugverdientijd</dt>
+          <dd><span data-count="12">12</span> – <span data-count="18">18</span> maanden</dd>
+        </div>
+        <div class="fig">
+          <dt>Omzet jaar 1</dt>
+          <dd>≈ €&nbsp;<span data-count="36000" data-fmt="k">36.000</span></dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- de wijzerplaat: de vaste openingsuren én de leesvoortgang -->
+    <figure class="dial" data-reveal data-delay="1">
+      <svg viewBox="-200 -200 400 400" role="img" aria-label="Wijzerplaat met het venster van 08:00 tot 12:00, de vaste standplaatsuren">
+        <g id="dialTicks"></g>
+        <circle class="dial__ring" r="150" />
+        <path class="dial__window" id="dialWindow" />
+        <g class="dial__hand" id="dialHand"><line x1="0" y1="-126" x2="0" y2="-150" /></g>
+        <text class="dial__cap" x="0" y="-38">vaste standplaats</text>
+        <text class="dial__time" x="0" y="10">08:00–12:00</text>
+        <text class="dial__cap" x="0" y="46">zaterdag &amp; zondag</text>
+      </svg>
+      <figcaption>Het venster waarin de hardloper langskomt — en waarin alles moet gebeuren.</figcaption>
+    </figure>
+  </div>
+
+  <a class="cue" href="#c1" data-reveal data-delay="3"><span>Lees het plan</span><i></i></a>
+</header>
+
+<!-- ══ 01 · CONCEPT ═══════════════════════════════════════════════ -->
+<section class="chap" id="c1" data-chapter="Het concept">
+  <aside class="chap__margin"><span class="chap__num">01</span><span class="chap__label">Het concept</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>Eén doelgroep, tot op de meter bediend.</h2>
+
+    <p class="lead" data-reveal>
+      <span class="drop">M</span>issie: hardlopers op een laagdrempelige, gezonde en verse manier
+      laten herstellen en bijtanken — precies op het moment en de plek waar dat nodig is,
+      tijdens of vlak na de run.
+    </p>
+
+    <ol class="points">
+      <li data-reveal>
+        <span class="points__n">01</span>
+        <h3>Scherpe focus</h3>
+        <p>Niet iedereen bedienen, maar één groep. Dat maakt het assortiment, de standplaats en de naam meteen herkenbaar — en het gesprek aan het raam korter.</p>
+      </li>
+      <li data-reveal data-delay="1">
+        <span class="points__n">02</span>
+        <h3>Mobiliteit</h3>
+        <p>De aanhanger beweegt mee met waar gelopen wordt: routes, clubtrainingen, evenementen. Er wordt niet gewacht op klandizie, er wordt naartoe gereden.</p>
+      </li>
+      <li data-reveal data-delay="2">
+        <span class="points__n">03</span>
+        <h3>Functioneel assortiment</h3>
+        <p>Gericht op herstel — elektrolyten, antioxidanten, eiwit — in plaats van een generiek sapaanbod dat overal te krijgen is.</p>
+      </li>
+      <li data-reveal data-delay="3">
+        <span class="points__n">04</span>
+        <h3>Lage instap</h3>
+        <p>Een compacte aanhanger zonder zware horeca-installatie houdt de investering onder de € 22.000 en het risico klein.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ 02 · MARKT ═════════════════════════════════════════════════ -->
+<section class="chap" id="c2" data-chapter="Markt &amp; doelgroep">
+  <aside class="chap__margin"><span class="chap__num">02</span><span class="chap__label">Markt &amp; doelgroep</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>De loper staat al stil. Alleen niet bij ons.</h2>
+    <p class="lead" data-reveal>
+      Hardlopen blijft een van de meest beoefende sporten van Nederland, met een grote
+      instroom van nieuwe lopers en een groeiend aanbod georganiseerde evenementen door
+      het jaar heen. Wat ontbreekt is aanbod dat zich uitsluitend op die loper richt,
+      op de plek van het sporten zelf.
+    </p>
+
+    <div class="cols">
+      <article data-reveal>
+        <h3>Recreatieve weekendlopers</h3>
+        <p>Individueel of in groepsverband, vaste ochtenden, vaste rondjes. De basis onder de omzet.</p>
+      </article>
+      <article data-reveal data-delay="1">
+        <h3>Evenementdeelnemers</h3>
+        <p>5 en 10 kilometer, halve en hele marathon, bootcamps. Piekdagen met hoge dichtheid.</p>
+      </article>
+      <article data-reveal data-delay="2">
+        <h3>Hardloopclubs</h3>
+        <p>Leden die ná de training blijven hangen. Voorspelbaar, herhalend, in overleg te plannen.</p>
+      </article>
+      <article data-reveal data-delay="3">
+        <h3>Passanten</h3>
+        <p>Wandelaars en fietsers die de standplaats passeren. Meegenomen omzet, geen doelgroep.</p>
+      </article>
+    </div>
+
+    <h3 class="h3" data-reveal>Wie er al staat</h3>
+    <div class="matrix-wrap" data-reveal>
+      <table class="matrix">
+        <caption class="sr">Vergelijking van RunJuice met bestaande aanbieders</caption>
+        <thead>
+          <tr>
+            <th scope="col">Aanbieder</th>
+            <th scope="col">Mobiel</th><th scope="col">Vers</th>
+            <th scope="col">Op de route</th><th scope="col">Voor lopers</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="mine"><th scope="row">RunJuice</th><td data-v="1"><span class="sr">ja</span></td><td data-v="1"><span class="sr">ja</span></td><td data-v="1"><span class="sr">ja</span></td><td data-v="1"><span class="sr">ja</span></td></tr>
+          <tr><th scope="row">Foodtrucks &amp; koffiekarren</th><td data-v="1"><span class="sr">ja</span></td><td data-v="1"><span class="sr">ja</span></td><td data-v="0"><span class="sr">nee</span></td><td data-v="0"><span class="sr">nee</span></td></tr>
+          <tr><th scope="row">Sportschool &amp; hardloopwinkel</th><td data-v="0"><span class="sr">nee</span></td><td data-v="1"><span class="sr">ja</span></td><td data-v="0"><span class="sr">nee</span></td><td data-v="1"><span class="sr">ja</span></td></tr>
+          <tr><th scope="row">Supermarkt &amp; tankstation</th><td data-v="0"><span class="sr">nee</span></td><td data-v="0"><span class="sr">nee</span></td><td data-v="0"><span class="sr">nee</span></td><td data-v="0"><span class="sr">nee</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 03 · DE KAART ══════════════════════════════════════════════ -->
+<section class="chap chap--tint" id="c3" data-chapter="De kaart">
+  <aside class="chap__margin"><span class="chap__num">03</span><span class="chap__label">De kaart</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>Vier producten. Elk met een taak.</h2>
+    <p class="lead" data-reveal>
+      Klein genoeg om zonder zware apparatuur te draaien, breed genoeg om zowel de
+      duurloper als de wandelende passant iets te verkopen. Achter elke regel staat
+      de geschatte brutomarge.
+    </p>
+
+    <ul class="menu">
+      <li data-reveal style="--tone:#A81B4A">
+        <span class="menu__mark" data-mark="biet"></span>
+        <div class="menu__text">
+          <h3>Verse herstelsappen</h3>
+          <p>Bieten-appel, banaan-bes. Gericht op uithoudingsvermogen en spierherstel.</p>
+        </div>
+        <span class="menu__price">€ 4,00 – 5,00</span>
+        <span class="menu__margin" style="--pct:62%"><i></i><b>marge 60–65%</b></span>
+      </li>
+      <li data-reveal data-delay="1" style="--tone:#2C6B86">
+        <span class="menu__mark" data-mark="kokos"></span>
+        <div class="menu__text">
+          <h3>Kokoswater &amp; elektrolyten</h3>
+          <p>Vochtaanvulling direct na de inspanning. Snel te schenken op drukke dagen.</p>
+        </div>
+        <span class="menu__price">€ 2,50 – 3,50</span>
+        <span class="menu__margin" style="--pct:52%"><i></i><b>marge 50–55%</b></span>
+      </li>
+      <li data-reveal data-delay="2" style="--tone:#D9761A">
+        <span class="menu__mark" data-mark="shot"></span>
+        <div class="menu__text">
+          <h3>Recovery shots</h3>
+          <p>Gember, kurkuma, citroen. Kleine besteding, hoogste marge, ideale impulsaankoop.</p>
+        </div>
+        <span class="menu__price">€ 2,00 – 2,50</span>
+        <span class="menu__margin" style="--pct:67%"><i></i><b>marge 65–70%</b></span>
+      </li>
+      <li data-reveal data-delay="3" style="--tone:#7A5230">
+        <span class="menu__mark" data-mark="reep"></span>
+        <div class="menu__text">
+          <h3>Eiwitsnacks</h3>
+          <p>Repen en noten na een lange duurloop. Houdbaar, dus zonder bederfrisico.</p>
+        </div>
+        <span class="menu__price">€ 2,00 – 2,50</span>
+        <span class="menu__margin" style="--pct:37%"><i></i><b>marge 35–40%</b></span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ 04 · STANDPLAATSEN ═════════════════════════════════════════ -->
+<section class="chap" id="c4" data-chapter="Standplaatsen">
+  <aside class="chap__margin"><span class="chap__num">04</span><span class="chap__label">Standplaatsen</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>Vaste tijden bouwen een vast publiek.</h2>
+    <p class="lead" data-reveal>
+      Terugkerend bezoek ontstaat door voorspelbaarheid: dezelfde plek, dezelfde uren.
+      Daaromheen bewegen de club- en evenementdagen mee met de loopkalender.
+    </p>
+
+    <figure class="week" data-reveal>
+      <div class="week__grid" id="weekGrid" aria-hidden="true"></div>
+      <figcaption class="week__legend">
+        <span><i class="sw sw--solid"></i>Vaste standplaats — park of hardlooproute</span>
+        <span><i class="sw sw--open"></i>Periodiek bij een hardloopclub, na de training</span>
+      </figcaption>
+      <table class="sr">
+        <caption>Weekschema van de standplaatsen</caption>
+        <tbody>
+          <tr><th scope="row">Zaterdag</th><td>08:00 – 12:00, vaste standplaats</td></tr>
+          <tr><th scope="row">Zondag</th><td>08:00 – 12:00, vaste standplaats</td></tr>
+          <tr><th scope="row">Dinsdag en donderdag</th><td>19:00 – 21:00, periodiek bij een hardloopclub</td></tr>
+        </tbody>
+      </table>
+    </figure>
+
+    <div class="cols cols--2">
+      <article data-reveal><h3>Evenementen</h3><p>Circa vier keer per jaar in het start- en finishgebied, geregeld via de organisator. Weinig dagen, veel omzet per dag.</p></article>
+      <article data-reveal data-delay="1"><h3>Uitbreiding</h3><p>Bedrijventerreinen en sportscholen met loopgroepen zijn de logische volgende stap, doordeweeks — pas ná een sluitend weekend.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 05 · DE AANHANGER ══════════════════════════════════════════ -->
+<section class="chap" id="c5" data-chapter="De aanhanger">
+  <aside class="chap__margin"><span class="chap__num">05</span><span class="chap__label">De aanhanger</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>Alles wat nodig is, past achter een trekhaak.</h2>
+
+    <div class="rig">
+      <figure class="rig__plate">
+        <svg viewBox="10 40 880 358" role="img" aria-labelledby="rigTitle">
+          <title id="rigTitle">Zijaanzicht van de aanhanger met de uitrusting aan boord</title>
+          <defs>
+            <pattern id="plateGrid" width="22" height="22" patternUnits="userSpaceOnUse">
+              <path class="plate__grid" d="M22 0H0v22" />
+            </pattern>
+          </defs>
+          <rect x="14" y="44" width="872" height="350" fill="url(#plateGrid)" />
+          <rect class="plate__frame" x="14" y="44" width="872" height="350" />
+          <g class="rig__draw">
+            <path class="ln ln--faint" d="M30 352 H870" />
+            <path class="ln" d="M200 284 L96 316" />
+            <path class="ln" d="M96 316 h-24 a8 8 0 0 0 0 16 h24 Z" />
+            <path class="ln" d="M142 306 V336" /><circle class="ln" cx="142" cy="343" r="8" />
+            <path class="ln" d="M180 284 H770" />
+            <circle class="ln" cx="560" cy="318" r="34" /><circle class="ln" cx="560" cy="318" r="13" />
+            <path class="ln ln--faint" d="M512 284 a48 48 0 0 1 96 0" />
+            <path class="ln ln--body" d="M214 96 H756 a16 16 0 0 1 16 16 V268 a16 16 0 0 1 -16 16 H214 a16 16 0 0 1 -16 -16 V112 a16 16 0 0 1 16 -16 Z" />
+            <path class="ln ln--faint" d="M192 96 H778" />
+            <path class="ln" d="M250 128 H470 V224 H250 Z" />
+            <path class="ln ln--awning" d="M250 126 H470 L528 54 H308 Z" />
+            <path class="ln ln--accent" d="M228 228 H498" />
+            <path class="ln" d="M560 130 H730 V236 H560 Z" />
+            <path class="ln ln--faint" d="M582 158 H700 M582 182 H712 M582 206 H648" />
+            <path class="ln ln--in" d="M262 236 H392 V280 H262 Z" />
+            <path class="ln ln--in" d="M300 228 V196 h36 v32 M308 196 v-32 h20 v32" />
+            <path class="ln ln--in" d="M356 228 V182 h36 v46 M392 200 h14" />
+            <path class="ln ln--in" d="M420 228 v-24 h58 v24 M470 204 v-26 h-20" />
+            <path class="ln ln--faint" d="M198 376 H400 M570 376 H772 M198 368 v16 M772 368 v16" />
+          </g>
+          <text class="rig__dim" x="485" y="382">2,5 – 3,5 m</text>
+          <g id="rigPins"></g>
+        </svg>
+        <figcaption>Zijaanzicht · maten indicatief</figcaption>
+      </figure>
+
+      <ol class="rig__legend" id="rigLegend">
+        <li data-x="326" data-y="258"><b>Koeling</b><span>Voor fruit, groente en gereed sap. Kleine, frequente inkoop houdt bederf laag.</span></li>
+        <li data-x="318" data-y="172"><b>Blender &amp; juicer</b><span>Professionele blender en een langzame sapper. Geen zware horeca-installatie nodig.</span></li>
+        <li data-x="449" data-y="190"><b>Spoelbak</b><span>Kleine bak met stromend water — voorwaarde voor de HACCP-registratie.</span></li>
+        <li data-x="398" data-y="90"><b>Uitgifteraam met luifel</b><span>Beschutting bij regen en een plank om op te leunen: de wachtrij wordt de etalage.</span></li>
+        <li data-x="645" data-y="183"><b>Menubord &amp; wrap</b><span>Herkenbare branding op de zijkant; het bord doet het verkoopwerk op afstand.</span></li>
+        <li data-x="112" data-y="300"><b>Dissel &amp; trekhaak</b><span>Te vervoeren achter een gewone auto met trekhaak; geen extra rijbewijs nodig.</span></li>
+      </ol>
+    </div>
+
+    <div class="cols cols--2">
+      <article data-reveal>
+        <h3>Personeel</h3>
+        <p>In de opstartfase draait de eigenaar de bar zelf, met incidentele hulp op drukke evenementdagen. Bij groei komt er een parttime kracht voor de weekenddiensten.</p>
+      </article>
+      <article data-reveal data-delay="1">
+        <h3>Inkoop</h3>
+        <p>Verse ingrediënten kort voor gebruik inkopen bij groothandel of lokale leverancier. Een vaste leveranciersafspraak maakt kosten en beschikbaarheid voorspelbaar en beperkt verspilling.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 06 · ZICHTBAARHEID ═════════════════════════════════════════ -->
+<section class="chap" id="c6" data-chapter="Zichtbaarheid">
+  <aside class="chap__margin"><span class="chap__num">06</span><span class="chap__label">Zichtbaarheid</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>De loopcommunity is klein en praat met zichzelf.</h2>
+    <p class="lead" data-reveal>
+      Dat is een voordeel: wie eenmaal binnen die kring zichtbaar is, hoeft nauwelijks
+      advertentiebudget uit te geven. De vijf middelen hieronder kosten vooral tijd.
+    </p>
+
+    <ol class="tactics">
+      <li data-reveal><h3>Wrap en menubord</h3><p>De aanhanger is het grootste reclamebord dat er is, en hij staat precies waar de doelgroep langskomt.</p></li>
+      <li data-reveal data-delay="1"><h3>Lokale social media</h3><p>Gericht op de loopcommunity in de eigen stad: routes, rondjes en samenwerkingen met loopgroepen.</p></li>
+      <li data-reveal data-delay="2"><h3>Clubs en organisatoren</h3><p>Structurele afspraken leveren herhaalde zichtbaarheid op, zonder advertentiebudget.</p></li>
+      <li data-reveal data-delay="3"><h3>Spaarkaart</h3><p>Het tiende sapje gratis maakt van de zaterdagloper een vaste klant.</p></li>
+      <li data-reveal data-delay="4"><h3>Proefmomenten</h3><p>Bij nieuwe locaties eerst proeven weggeven; naamsbekendheid gaat vóór marge.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ 07 · DE CIJFERS ════════════════════════════════════════════ -->
+<section class="chap chap--tint" id="c7" data-chapter="De cijfers">
+  <aside class="chap__margin"><span class="chap__num">07</span><span class="chap__label">De cijfers</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>Wat het kost, en wanneer het terug is.</h2>
+
+    <h3 class="h3" data-reveal>Investeringsbegroting</h3>
+    <ul class="budget" id="budget">
+      <li data-reveal data-lo="8000" data-hi="12000"><span class="budget__name">Kleine foodtruckaanhanger</span><span class="budget__bar"></span><span class="budget__val">8.000 – 12.000</span></li>
+      <li data-reveal data-lo="3000" data-hi="4500"><span class="budget__name">Koeling, blender, spoelvoorziening</span><span class="budget__bar"></span><span class="budget__val">3.000 – 4.500</span></li>
+      <li data-reveal data-lo="2000" data-hi="2500"><span class="budget__name">Werkkapitaal en buffer</span><span class="budget__bar"></span><span class="budget__val">2.000 – 2.500</span></li>
+      <li data-reveal data-lo="800" data-hi="1500"><span class="budget__name">Wrap, branding en menubord</span><span class="budget__bar"></span><span class="budget__val">800 – 1.500</span></li>
+      <li data-reveal data-lo="500" data-hi="900"><span class="budget__name">Verzekeringen, eerste jaar</span><span class="budget__bar"></span><span class="budget__val">500 – 900</span></li>
+      <li data-reveal data-lo="400" data-hi="800"><span class="budget__name">Vergunningen, HACCP en KVK</span><span class="budget__bar"></span><span class="budget__val">400 – 800</span></li>
+    </ul>
+    <p class="budget__sum" data-reveal><span class="label">Totaal</span><b>€ 19.500 – € 22.000</b></p>
+    <p class="fineprint" data-reveal>
+      Indicatief, op basis van huidige marktprijzen voor kleine aanhangers en basisuitrusting.
+      De volle balk is de ondergrens, het lichte deel loopt door tot de bovengrens.
+    </p>
+
+    <h3 class="h3" data-reveal>Jaarprognose</h3>
+    <p class="lead" data-reveal>
+      De aannames uit het plan staan hieronder ingesteld. Verschuif ze om te zien
+      waar het model op breekt — en waar het ruimte heeft.
+    </p>
+
+    <div class="model">
+      <form class="model__ctrl" id="modelForm">
+        <label class="ctrl">
+          <span class="ctrl__row"><span>Draaidagen per jaar</span><output id="outDays">100</output></span>
+          <input type="range" id="inDays" min="60" max="160" step="4" value="100" />
+          <span class="ctrl__hint">acht weekenddagen per maand plus evenementdagen</span>
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__row"><span>Producten per draaidag</span><output id="outUnits">80</output></span>
+          <input type="range" id="inUnits" min="40" max="140" step="5" value="80" />
+          <span class="ctrl__hint">het plan rekent met 70 tot 90</span>
+        </label>
+        <label class="ctrl">
+          <span class="ctrl__row"><span>Gemiddelde besteding</span><output id="outSpend">€ 4,50</output></span>
+          <input type="range" id="inSpend" min="3" max="6.5" step="0.25" value="4.5" />
+          <span class="ctrl__hint">gemiddeld over de hele kaart</span>
+        </label>
+        <button type="button" id="modelReset" class="reset">Terug naar de aannames uit het plan</button>
+      </form>
+
+      <div class="model__out">
+        <div class="wf" id="waterfall" aria-hidden="true"></div>
+        <table class="pl">
+          <caption class="sr">Jaarprognose bij de gekozen aannames</caption>
+          <tbody>
+            <tr><th scope="row">Omzet</th><td id="plRevenue">€ 36.000</td></tr>
+            <tr><th scope="row">Inkoop ingrediënten <span class="dim">35% van de omzet</span></th><td id="plCogs">− € 12.600</td></tr>
+            <tr><th scope="row">Standplaats en evenementen</th><td id="plPitch">− € 1.500</td></tr>
+            <tr><th scope="row">Verzekering en onderhoud</th><td>− € 1.200</td></tr>
+            <tr><th scope="row">Marketing</th><td>− € 800</td></tr>
+            <tr class="pl__sum"><th scope="row">Brutowinst</th><td id="plProfit">€ 19.900</td></tr>
+          </tbody>
+        </table>
+
+        <div class="payback">
+          <svg class="payback__dial" viewBox="-60 -60 120 120" aria-hidden="true">
+            <g id="pbTicks"></g>
+            <circle class="pb__track" r="46" />
+            <circle class="pb__arc" id="pbArc" r="46" pathLength="100" transform="rotate(-90)" stroke-dasharray="0 100" />
+          </svg>
+          <div class="payback__text">
+            <span class="label">Terugverdientijd</span>
+            <b id="plPayback">13 maanden</b>
+            <span class="fineprint">bij een investering van € 20.750, het midden van de range. De schaal loopt tot 24 maanden.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 08 · RISICO'S ══════════════════════════════════════════════ -->
+<section class="chap" id="c8" data-chapter="Risico's">
+  <aside class="chap__margin"><span class="chap__num">08</span><span class="chap__label">Risico's</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>Wat er mis kan gaan — en het antwoord erop.</h2>
+
+    <div class="risks__head" data-reveal><span class="label">Risico</span><span class="label">Beheersmaatregel</span></div>
+    <dl class="risks">
+      <div data-reveal>
+        <dt>Weersafhankelijkheid</dt>
+        <dd>Flexibele planning en uitbreiding naar binnenlocaties zoals sportscholen in de wintermaanden.</dd>
+      </div>
+      <div data-reveal data-delay="1">
+        <dt>Geen standplaatsvergunning</dt>
+        <dd>Vroegtijdig contact met de gemeente en altijd meerdere locaties achter de hand houden.</dd>
+      </div>
+      <div data-reveal data-delay="2">
+        <dt>Bederf van verse waar</dt>
+        <dd>Kleine, frequente inkoop en goede koeling aan boord; houdbare snacks als buffer in het assortiment.</dd>
+      </div>
+      <div data-reveal data-delay="3">
+        <dt>Seizoensgebonden vraag</dt>
+        <dd>Assortiment en standplaatsen aanpassen aan het seizoen, met focus op indoor events en clubs.</dd>
+      </div>
+    </dl>
+
+    <h3 class="h3" data-reveal>Vergunningen en juridisch</h3>
+    <ul class="permits">
+      <li data-reveal>Inschrijving bij de Kamer van Koophandel</li>
+      <li data-reveal data-delay="1">Vent- of standplaatsvergunning, per gemeente aan te vragen</li>
+      <li data-reveal data-delay="2">Voedselveiligheidsregistratie (HACCP) bij de NVWA</li>
+      <li data-reveal data-delay="3">Aansprakelijkheids- en aanhangerverzekering</li>
+      <li data-reveal data-delay="4">Evenementenvergunning, doorgaans via de organisator</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ 09 · PLANNING ══════════════════════════════════════════════ -->
+<section class="chap" id="c9" data-chapter="Planning">
+  <aside class="chap__margin"><span class="chap__num">09</span><span class="chap__label">Planning</span></aside>
+  <div class="chap__body">
+    <h2 class="h2" data-splitwords>De eerste zes maanden.</h2>
+
+    <ol class="timeline">
+      <li data-reveal><span class="timeline__m">Maand 1</span><p>KVK-inschrijving, aanschaf van de aanhanger, aanvraag HACCP en vergunningen.</p></li>
+      <li data-reveal data-delay="1"><span class="timeline__m">Maand 2</span><p>Inrichting en branding, leveranciers regelen, eerste testdraaidagen.</p></li>
+      <li data-reveal data-delay="2"><span class="timeline__m">Maand 3</span><p>Start van de vaste weekendstandplaats, opbouw van social media.</p></li>
+      <li data-reveal data-delay="3"><span class="timeline__m">Maand 4 – 5</span><p>Eerste samenwerkingen met hardloopclubs en een klein evenement.</p></li>
+      <li data-reveal data-delay="4"><span class="timeline__m">Maand 6</span><p>Evaluatie van omzet en locaties, eventueel uitbreiding van standplaatsen of draaidagen.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ SLOT ═══════════════════════════════════════════════════════ -->
+<section class="finish" id="c10" data-chapter="Conclusie">
+  <div class="finish__in">
+    <p class="label" data-reveal>Conclusie</p>
+    <blockquote class="finish__quote">
+      <span class="line" data-line>Een gericht, herkenbaar concept</span>
+      <span class="line" data-line>met een lage instap en directe</span>
+      <span class="line" data-line><em>aansluiting bij de doelgroep.</em></span>
+    </blockquote>
+    <p class="finish__body" data-reveal data-delay="1">
+      Het succes hangt vooral af van locatiekeuze, structurele samenwerking met clubs en
+      evenementen, en een consistente aanwezigheid die vertrouwen en herhaalbezoek opbouwt.
+      De cijfers in dit plan zijn een eerste inschatting; ze worden aangescherpt zodra de
+      werkelijke standplaatstarieven en klantaantallen bekend zijn.
+    </p>
+    <dl class="ask" data-reveal data-delay="2">
+      <div><dt>Benodigde investering</dt><dd>€ 19.500 – € 22.000</dd></div>
+      <div><dt>Terugverdientijd</dt><dd>12 – 18 maanden</dd></div>
+      <div><dt>Brutowinst jaar 1</dt><dd>≈ € 19.900</dd></div>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p>RunJuice — werktitel · Businessplan versie 0.1 · augustus 2026</p>
+  <p>Alle bedragen zijn indicatief en gebaseerd op eigen inschatting.</p>
+</footer>
+
+<script src="plan.js"></script>
+</body>
+</html>
